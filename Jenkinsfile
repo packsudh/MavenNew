@@ -36,7 +36,7 @@ pipeline
         {
             steps
             {
-                sh 'https://github.com/packsudh/MavenNew'
+                git 'https://github.com/packsudh/MavenNew.git
             }
         }
     }
