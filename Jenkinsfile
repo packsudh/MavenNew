@@ -7,38 +7,39 @@ pipeline
         {
             steps
             {
-              git 'https://github.com/packsudh/maven.git' 
+                git 'https://github.com/intelliqittrainings/maven.git'
             }
         }
         stage ("ContinousBuild")
         {
             steps
             {
-              sh 'mvn package'
+                sh 'mvn package'
             }
         }
-         stage ("ContinousDeployment")
+        stage ("ContinousDeployment")
         {
             steps
             {
-              sh 'scp /var/lib/jenkins/workspace/DeclarativePipeline1/webapp/target/webapp.war ubuntu@52.53.210.40:/var/lib/tomcat9/webapps/testapp.war'
+                deploy adapters: [tomcat9(credentialsId: '55f29bec-4fc7-41ba-927f-52f953c636e8', path: '', url: 'http://172.31.17.13:8080')], contextPath: 'test1', war: '**/*.war'
             }
         }
         stage ("ContinousTesting")
         {
             steps
             {
-              git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-              sh 'java -jar /var/lib/jenkins/workspace/DeclarativePipeline1/testing.jar'
+                git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                sh 'java -jar /var/lib/jenkins/workspace/DeclarativePipelineNew/testing.jar'
             }
         }
-        stage ("ContinousDelivery")
+        stage ("ContinuousDelivery")
         {
             steps
             {
-             sh 'scp /var/lib/jenkins/workspace/DeclarativePipeline1/webapp/target/webapp.war ubuntu@50.18.232.121:/var/lib/tomcat9/webapps/prodapp.war'
+                deploy adapters: [tomcat9(credentialsId: '55f29bec-4fc7-41ba-927f-52f953c636e8', path: '', url: 'http://172.31.12.15:8080')], contextPath: 'prod1', war: '**/*.war'
             }
         }
-    }    
-  
+    }
+    
 }
+
