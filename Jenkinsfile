@@ -36,7 +36,7 @@ pipeline
         {
             steps
             {
-                deploy adapters: [tomcat9(credentialsId: '55f29bec-4fc7-41ba-927f-52f953c636e8', path: '', url: 'http://172.31.12.15:8080')], contextPath: 'prod1', war: '**/*.war'
+                https://github.com/packsudh/MavenNew.git
             }
         }
     }
