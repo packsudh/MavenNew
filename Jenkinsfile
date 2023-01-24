@@ -1,44 +1,62 @@
+@Library('newlibrary')_
 pipeline
 {
     agent any
     stages
-    {
-        stage ("ContinousDownload")
         {
-            steps
+            stage ("Continuous Download")
             {
-                git 'https://github.com/packsudh/MavenNew.git'
+                steps
+                {
+                    script
+                    {
+                        cicd.newGit("https://github.com/packsudh/MavenNew.git")
+                    }
+                }
             }
-        }
-        stage ("ContinousBuild")
-        {
-            steps
+        
+            stage ('Continuous Build')
+             {
+                steps
+                {
+                    script
+                    {
+                        cicd.newMaven()
+                    }
+                }
+            }
+           stage ('Continuous Deployment')
             {
-                sh 'mvn package'
+                steps
+                {
+                    script
+                    {
+                        cicd.newDeploy("DeclarativePipelineWithSharedLibraries","172.31.17.13","test1")
+                    }
+                }
             }
-        }
-        stage ("ContinousDeployment")
-        {
-            steps
+            
+            stage ('Continuous Testing')
             {
-               sh 'scp /var/lib/jenkins/workspace/DeclarativePipelineNew/webapp/target/webapp.war ubuntu@54.241.52.3:/var/lib/tomcat9/webapps/test1.war'
+                steps
+                {
+                    script
+                    {
+                        cicd.newGit("https://github.com/intelliqittrainings/FunctionalTesting.git")
+                        cicd.runSelenium("DeclarativePipelineWithSharedLibraries")
+                    }
+                }
             }
-        }
-        stage ("ContinousTesting")
-        {
-            steps
+            stage ('Continuous Delivery')
             {
-                git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-                sh 'java -jar /var/lib/jenkins/workspace/DeclarativePipelineNew/testing.jar'
+                steps
+                {
+                    script
+                    {
+                        cicd.newDeploy("DeclarativePipelineWithSharedLibraries","172.31.12.15","prod1")
+                    }
+                }
             }
-        }
-        stage ("ContinuousDelivery")
-        {
-            steps
-            {
-               sh 'scp /var/lib/jenkins/workspace/DeclarativePipelineNew/webapp/target/webapp.war ubuntu@54.219.142.101:/var/lib/tomcat9/webapps/prod1.war'
-            }
-        }
-    }
+            
+      }
 }
-
